@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Android build files
+android/build/
+android/app/build/
+android/.gradle/
+
+
+# APKs
+*.apk
+
+# Logs
+npm-debug.log*

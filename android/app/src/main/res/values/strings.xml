@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">what should i do now ? App</string>
+    <string name="title_activity_main">what should i do now ? App</string>
+    <string name="package_name">com.whatshouldidonow.app</string>
+    <string name="custom_url_scheme">com.whatshouldidonow.app</string>
+</resources>
