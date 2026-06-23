@@ -1,6 +1,19 @@
 {
   "name": "wsidn-app",
-  "version": "2.0",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/josheworks/What-should-i-do-now--web-app#readme",
+  "bugs": {
+    "url": "https://github.com/josheworks/What-should-i-do-now--web-app/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josheworks/What-should-i-do-now--web-app.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "script.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
