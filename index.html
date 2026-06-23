@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>What Should I Do Now?</title>
 </head>
+
 <body>
-    <div class="container">
+    <main class="container" id="homePage">
         <div class="logo">🎯</div>
         <h1>What Should I Do Now?</h1>
         <p class="subtitle">Stop scrolling. Start doing.</p>
@@ -27,10 +29,10 @@
             <div id="historyList"></div>
         </div>
 
-    </div>
+    </main>
 
     <nav class="bottom-nav" aria-label="Main navigation">
-        <a class="nav-item" href="#home" aria-label="Home">
+        <a class="nav-item active" id="homeNav" href="#home" aria-label="Home" aria-current="page">
             <span class="nav-icon">&#8962;</span>
             <span>Home</span>
         </a>
@@ -38,17 +40,51 @@
             <span class="nav-icon">&#9684;</span>
             <span>Calendar</span>
         </a>
-        <a class="nav-item" href="#settings" aria-label="Settings">
+        <a class="nav-item" id="settingsNav" href="#settings" aria-label="Settings">
             <span class="nav-icon">&#9881;</span>
             <span>Settings</span>
         </a>
     </nav>
-    
 
-<script>
-      
-      
-      const tasks = [
+    <section class="settingsPage" id="settingsPage" aria-labelledby="settingsTitle" hidden>
+        <div class="settings-header">
+            <p class="settings-kicker">What Should I Do Now?</p>
+            <h2 id="settingsTitle">Settings</h2>
+        </div>
+        <div class="user-data">
+            <div class="profile-image" aria-hidden="true">UN</div>
+            <div class="user-details">
+                <div class="user-name-row">
+                    <h3>User Name</h3>
+                    <button class="share-btn" type="button" aria-label="Share profile" title="Share profile">&#8599;</button>
+                </div>
+                <p>Keep moving, one task at a time.</p>
+            </div>
+        </div>
+        <div class="settings-list" aria-label="Settings options">
+            <button class="settings-option" type="button">
+                <span class="option-icon" aria-hidden="true">&#9786;</span>
+                <span>Account</span><span class="option-arrow" aria-hidden="true">&#8250;</span>
+            </button>
+            <button class="settings-option" type="button">
+                <span class="option-icon" aria-hidden="true">&#9835;</span>
+                <span>Notifications</span><span class="option-arrow" aria-hidden="true">&#8250;</span>
+            </button>
+            <button class="settings-option" type="button">
+                <span class="option-icon" aria-hidden="true">?</span>
+                <span>Support</span><span class="option-arrow" aria-hidden="true">&#8250;</span>
+            </button>
+            <button class="settings-option logout-option" type="button">
+                <span class="option-icon" aria-hidden="true">&#8617;</span>
+                <span>Log out</span><span class="option-arrow" aria-hidden="true">&#8250;</span>
+            </button>
+        </div>
+    </section>
+
+    <script>
+
+
+        const tasks = [
             { text: "Learn JavaScript for 20 minutes", icon: "💻" },
             { text: "Go for a 10-minute walk", icon: "🚶" },
             { text: "Drink a glass of water", icon: "💧" },
@@ -75,17 +111,35 @@
         let streak = 0;
         let lastTaskIndex = -1;
 
+        const homePage = document.getElementById('homePage');
+        const settingsPage = document.getElementById('settingsPage');
+        const homeNav = document.getElementById('homeNav');
+        const settingsNav = document.getElementById('settingsNav');
+
+        function showPage(page) {
+            const showSettings = page === 'settings';
+            homePage.hidden = showSettings;
+            settingsPage.hidden = !showSettings;
+            homeNav.classList.toggle('active', !showSettings);
+            settingsNav.classList.toggle('active', showSettings);
+            homeNav.toggleAttribute('aria-current', !showSettings);
+            settingsNav.toggleAttribute('aria-current', showSettings);
+        }
+
+        homeNav.addEventListener('click', () => showPage('home'));
+        settingsNav.addEventListener('click', () => showPage('settings'));
+
         function task() {
             const btn = document.getElementById('taskBtn');
             const taskCard = document.getElementById('taskCard');
             const taskDisplay = document.getElementById('taskDisplay');
-            
+
             btn.disabled = true;
             btn.textContent = 'Choosing...';
-            
+
             // Animation effect
             taskCard.classList.remove('active');
-            
+
             // Core to build an random tasks
             let shuffleCount = 0;
             const shuffleInterval = setInterval(() => {
@@ -97,26 +151,26 @@
                 // to stop the suffle and display the result
                 if (shuffleCount >= 8) {
                     clearInterval(shuffleInterval);
-                    
+
                     // Pick final task (avoid immediate repeat)
                     let newIndex;
                     do {
                         newIndex = Math.floor(Math.random() * tasks.length);
                     } while (newIndex === lastTaskIndex && tasks.length > 1);
-                    
+
                     lastTaskIndex = newIndex;
                     const finalTask = tasks[newIndex];
-                    
+
                     taskDisplay.innerHTML = `<span class="task-icon">${finalTask.icon}</span><br>${finalTask.text}`;
                     taskCard.classList.add('active');
-                    
+
                     // Update history
                     addToHistory(finalTask);
-                    
+
                     // Update streak
                     streak++;
                     updateStreak();
-                    
+
                     btn.disabled = false;
                     btn.textContent = 'What Should I Do Now?';
                 }
@@ -127,14 +181,14 @@
             const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             history.unshift({ ...task, time: timestamp });
             if (history.length > 10) history.pop();
-            
+
             updateHistoryDisplay();
         }
 
         function updateHistoryDisplay() {
             const historySection = document.getElementById('historySection');
             const historyList = document.getElementById('historyList');
-            
+
             if (history.length > 0) {
                 historySection.style.display = 'block';
                 historyList.innerHTML = history.map(item => `
@@ -158,7 +212,8 @@
 
         // Keyboard shortcut
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' || e.code === 'Enter') {
+            const isInteractive = e.target.closest('a, button, input, textarea, select');
+            if (!homePage.hidden && !isInteractive && (e.code === 'Space' || e.code === 'Enter')) {
                 e.preventDefault();
                 const btn = document.getElementById('taskBtn');
                 if (!btn.disabled) {
@@ -166,6 +221,7 @@
                 }
             }
         });
-</script>
+    </script>
 </body>
+
 </html>
