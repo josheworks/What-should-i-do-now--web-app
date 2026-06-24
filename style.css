@@ -351,7 +351,7 @@
         }
 
         .user-name-row {
-            text-color: #ffffff;
+            color: #ffffff;
             display: flex;
             align-items: center;
             gap: 9px;
